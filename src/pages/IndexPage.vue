@@ -60,84 +60,103 @@
       </q-chip>
     </div>
     <div class="row">
-      <q-table :columns="tableColumns" :rows="tableRows"></q-table>
+      <offers-table :offers="offers" :criteria="evaluationCriteria" @offer-selected="onOfferSelected" />
     </div>
   </q-page>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
+<script lang="ts" setup>
+import OffersTable from 'components/OffersTable.vue';
 
-export default defineComponent({
-  name: 'EvaluationPage',
-
-  setup() {
-    const evaluationCriteria = [
-      {
-        id: 'a',
-        name: 'Quality'
-      },
-      {
-        id: 'b',
-        name: 'Delivery Speed'
-      },
-      {
-        id: 'c',
-        name: 'Discount'
-      }
-    ]
-
-    const tableColumns = [
-      {
-        name: 'offer-name',
-        label: 'Offer Name',
-        field: 'offerName'
-      },
-      {
-        name: 'quality',
-        label: 'Quality',
-        field: 'quality'
-      },
-      {
-        name: 'deliverySpeed',
-        label: 'Delivery Speed',
-        field: 'deliverySpeed'
-      },
-      {
-        name: 'discount',
-        label: 'Discount',
-        field: 'discount'
-      }
-    ]
-
-    const tableRows = [
-      {
-        offerName: 'Big Store of Stores',
-        quality: 2.8,
-        deliverySpeed: 3.5,
-        discount: 0
-      },
-      {
-        offerName: 'Pappa Beh\'s Merchandise',
-        quality: 1.9,
-        deliverySpeed: 4,
-        discount: 3
-      },
-      {
-        offerName: 'All You Need Goods',
-        quality: 4,
-        deliverySpeed: -1.3,
-        discount: 1
-      },
-      {
-        offerName: 'Flanders & Sons co.',
-        quality: 2,
-        deliverySpeed: 0,
-        discount: 5
-      }
-    ]
-
-    return { tableColumns, tableRows, evaluationCriteria: evaluationCriteria }
+const evaluationCriteria = [
+  {
+    id: 'a',
+    name: 'Quality'
+  },
+  {
+    id: 'b',
+    name: 'Delivery Speed'
+  },
+  {
+    id: 'c',
+    name: 'Discount'
   }
-});
+]
+
+const offers: InstanceType<typeof OffersTable>["$props"] = [
+  {
+    id: 'o1',
+    offerName: 'Big Store of Stores',
+    evaluationScores: [
+      {
+        criterionId: 'a',
+        score: 2.8
+      },
+      {
+        criterionId: 'b',
+        score: 3.5
+      },
+      {
+        criterionId: 'c',
+        score: 0
+      }
+    ]
+  },
+  {
+    id: 'o2',
+    offerName: 'Pappa Beh\'s Merchandise',
+    evaluationScores: [
+      {
+        criterionId: 'a',
+        score: 1.9
+      },
+      {
+        criterionId: 'b',
+        score: 4
+      },
+      {
+        criterionId: 'c',
+        score: 3
+      }
+    ]
+  },
+  {
+    id: 'o3',
+    offerName: 'All You Need Goods',
+    evaluationScores: [
+      {
+        criterionId: 'a',
+        score: 4
+      },
+      {
+        criterionId: 'b',
+        score: -1.3
+      },
+      {
+        criterionId: 'c',
+        score: 1
+      }
+    ]
+  },
+  {
+    id: 'o4',
+    offerName: 'Flanders & Sons co.',
+    evaluationScores: [
+      {
+        criterionId: 'a',
+        score: 2
+      },
+      {
+        criterionId: 'b',
+        score: 0
+      },
+      {
+        criterionId: 'c',
+        score: 5
+      }
+    ]
+  }
+]
+
+const onOfferSelected = (id: string) => console.log(id)
 </script>
