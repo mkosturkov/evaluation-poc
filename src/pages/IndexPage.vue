@@ -54,10 +54,12 @@
       </q-card>
     </div>
     <div class="row">
-      <q-chip color="primary" outline> + Add Criterion</q-chip>
-      <q-chip v-for="criterion in evaluationCriteria" :key="criterion.id" removable color="primary" text-color="white">
-        {{ criterion.name }}
-      </q-chip>
+      <criteria-list
+        :criteria="evaluationCriteria"
+        @add-new="onAddCriterion"
+        @edit="onEditCriterion"
+        @remove="onEditCriterion"
+      />
     </div>
     <div class="row">
       <offers-table :offers="offers" :criteria="evaluationCriteria" @offer-selected="onOfferSelected" />
@@ -67,6 +69,7 @@
 
 <script lang="ts" setup>
 import OffersTable from 'components/OffersTable.vue';
+import CriteriaList from 'components/CriteriaList.vue';
 
 const evaluationCriteria = [
   {
@@ -159,4 +162,8 @@ const offers: InstanceType<typeof OffersTable>["$props"] = [
 ]
 
 const onOfferSelected = (id: string) => console.log(id)
+
+const onAddCriterion = () => console.log('add criterion')
+const onRemoveCriterion = (id: string) => console.log('remove criterion', id)
+const onEditCriterion = (id: string) => console.log('edit criterion', id)
 </script>
