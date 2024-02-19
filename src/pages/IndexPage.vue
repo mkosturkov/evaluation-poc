@@ -1,46 +1,19 @@
 <template>
   <q-page>
-    <div class="row">
-      <q-card>
-        <q-card-section>
-          Total Score: +2.5%
-        </q-card-section>
-        <q-card-section>
-          <div style="margin-top: 20px">
-            Quality
-          </div>
-          <div style="padding: 30px 0" class="row">
-            <q-slider model-value="0" label label-always min="-50" max="50"></q-slider>
-          </div>
-          <div style="margin-top: 20px">
-            Delivery Speed
-          </div>
-          <div style="padding: 30px 0" class="row">
-            <q-slider model-value="0" label label-always min="-50" max="50"></q-slider>
-          </div>
-          <div style="margin-top: 20px">
-            Discount
-          </div>
-          <div style="padding: 30px 0" class="row">
-            <q-slider model-value="0" label label-always min="-50" max="50"></q-slider>
-          </div>
-        </q-card-section>
-        <q-card-actions>
-          <q-btn>Close</q-btn>
-          <q-btn>Save</q-btn>
-        </q-card-actions>
-      </q-card>
-    </div>
-    <div class="row">
-      <q-dialog v-model="criterionDialog">
-        <CriterionEditForm
-          :criterion="currentCriterion"
-          :max-weight="criterionMaxWeight"
-          @save="onSaveCriterion"
-          @cancel="onCloseCriterionDialog"
-        />
-      </q-dialog>
-    </div>
+    <q-dialog v-model="scoresDialog">
+      <EvaluationForm
+        :scores="scoresDialogScores"
+        :criteria="evaluationCriteria"
+      />
+    </q-dialog>
+    <q-dialog v-model="criterionDialog">
+      <CriterionEditForm
+        :criterion="currentCriterion"
+        :max-weight="criterionMaxWeight"
+        @save="onSaveCriterion"
+        @cancel="onCloseCriterionDialog"
+      />
+    </q-dialog>
     <div class="row">
       <criteria-list
         :criteria="evaluationCriteria"
@@ -60,6 +33,7 @@
   import CriteriaList from 'components/CriteriaList.vue';
   import { computed, ref } from 'vue';
   import CriterionEditForm from 'components/CriterionEditForm.vue';
+  import EvaluationForm from 'components/EvaluationForm.vue';
 
     const evaluationCriteria = [
     {
@@ -153,7 +127,14 @@
       ]
     }
   ]
-  const onOfferSelected = (id: string) => console.log(id)
+
+  const scoresDialog = ref(false)
+  const scoresDialogScores = ref(offers[0].evaluationScores)
+
+  const onOfferSelected = (id: string) => {
+    scoresDialog.value = true
+    scoresDialogScores.value = offers.value.find((o: any) => o.id === id)?.evaluationScores
+  }
 
   const criterionDialog = ref(false)
   const newCriterion = () => ({
