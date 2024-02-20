@@ -34,13 +34,14 @@
 </template>
 
 <script lang="ts" setup>
+  import { NewCriterion, Criterion, EvaluationScore, Offer } from 'components/types';
   import OffersTable from 'components/OffersTable.vue';
   import CriteriaList from 'components/CriteriaList.vue';
-  import { computed, ref } from 'vue';
+  import { computed, reactive, ref } from 'vue';
   import CriterionEditForm from 'components/CriterionEditForm.vue';
   import EvaluationForm from 'components/EvaluationForm.vue';
 
-    const evaluationCriteria = [
+  const evaluationCriteria = reactive<Criterion[]>([
     {
       id: 'a',
       name: 'Quality',
@@ -56,92 +57,96 @@
       name: 'Discount',
       weight: 2.2
     }
-  ]
+  ])
 
-  const offers: InstanceType<typeof OffersTable>["$props"] = [
-    {
-      id: 'o1',
-      offerName: 'Big Store of Stores',
-      evaluationScores: [
-        {
-          criterionId: 'a',
-          score: 2.8
-        },
-        {
-          criterionId: 'b',
-          score: 3.5
-        },
-        {
-          criterionId: 'c',
-          score: 0
-        }
-      ]
-    },
-    {
-      id: 'o2',
-      offerName: 'Pappa Beh\'s Merchandise',
-      evaluationScores: [
-        {
-          criterionId: 'a',
-          score: 1.9
-        },
-        {
-          criterionId: 'b',
-          score: 4
-        },
-        {
-          criterionId: 'c',
-          score: 3
-        }
-      ]
-    },
-    {
-      id: 'o3',
-      offerName: 'All You Need Goods',
-      evaluationScores: [
-        {
-          criterionId: 'a',
-          score: 4
-        },
-        {
-          criterionId: 'b',
-          score: -1.3
-        },
-        {
-          criterionId: 'c',
-          score: 1
-        }
-      ]
-    },
-    {
-      id: 'o4',
-      offerName: 'Flanders & Sons co.',
-      evaluationScores: [
-        {
-          criterionId: 'a',
-          score: 2
-        },
-        {
-          criterionId: 'b',
-          score: 0
-        },
-        {
-          criterionId: 'c',
-          score: 5
-        }
-      ]
-    }
-  ]
-
+  const offers = reactive<Offer[]>([
+      {
+        id: 'o1',
+        offerName: 'Big Store of Stores',
+        evaluationScores: [
+          {
+            criterionId: 'a',
+            score: 2.8
+          },
+          {
+            criterionId: 'b',
+            score: 3.5
+          },
+          {
+            criterionId: 'c',
+            score: 0
+          }
+        ]
+      },
+      {
+        id: 'o2',
+        offerName: 'Pappa Beh\'s Merchandise',
+        evaluationScores: [
+          {
+            criterionId: 'a',
+            score: 1.9
+          },
+          {
+            criterionId: 'b',
+            score: 4
+          },
+          {
+            criterionId: 'c',
+            score: 3
+          }
+        ]
+      },
+      {
+        id: 'o3',
+        offerName: 'All You Need Goods',
+        evaluationScores: [
+          {
+            criterionId: 'a',
+            score: 4
+          },
+          {
+            criterionId: 'b',
+            score: -1.3
+          },
+          {
+            criterionId: 'c',
+            score: 1
+          }
+        ]
+      },
+      {
+        id: 'o4',
+        offerName: 'Flanders & Sons co.',
+        evaluationScores: [
+          {
+            criterionId: 'a',
+            score: 2
+          },
+          {
+            criterionId: 'b',
+            score: 0
+          },
+          {
+            criterionId: 'c',
+            score: 5
+          }
+        ]
+      }
+    ]
+  )
   const scoresDialog = ref(false)
-  const scoresDialogScores = ref(offers[0].evaluationScores)
+  const scoresDialogScores = ref<EvaluationScore[]>([])
   const scoresLoading = ref(false)
 
   const onOfferSelected = (id: string) => {
     scoresDialog.value = true
-    scoresDialogScores.value = offers.find((o: any) => o.id === id)?.evaluationScores
+    const selectedOffer = offers.find((o) => o.id === id)
+    if (!selectedOffer) {
+      throw 'could not find offer'
+    }
+    scoresDialogScores.value = selectedOffer.evaluationScores
   }
-  const saveScores = (scores: any) => {
+  const saveScores = (scores: EvaluationScore[]) => {
     console.log('saving scores', scores)
     scoresLoading.value = true
     setTimeout(
@@ -159,7 +164,7 @@
   const criterionDialog = ref(false)
   const criterionLoading = ref(false)
   const criterionError = ref<string|false>(false)
-  const newCriterion = () => ({
+  const newCriterion = (): NewCriterion => ({
     name: '',
     weight: 0
   })
@@ -178,7 +183,7 @@
     currentCriterion.value = toEdit
     criterionDialog.value = true
   }
-  const onSaveCriterion = (criterion: { name: string }) => {
+  const onSaveCriterion = (criterion: NewCriterion | Criterion) => {
     console.log('saving criterion', criterion)
     criterionLoading.value = true
     criterionError.value = false

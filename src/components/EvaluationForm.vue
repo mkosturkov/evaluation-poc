@@ -21,19 +21,12 @@
 </template>
 
 <script setup lang="ts">
-
-import { computed, ref } from 'vue';
+  import { Criterion, EvaluationScore } from 'components/types';
+  import { computed, ref } from 'vue';
 
   const props = defineProps<{
-    criteria: Array<{
-      id: string
-      name: string
-      weight: number
-    }>
-    scores: Array<{
-      criterionId: string
-      score: number
-    }>
+    criteria: Criterion[]
+    scores: EvaluationScore[]
     loading: boolean
   }>()
 
@@ -50,7 +43,7 @@ import { computed, ref } from 'vue';
 
   const emit = defineEmits<{
     (e: 'cancel'): void
-    (e: 'save', scores: Array<{criterionId: string, score: number}>): void
+    (e: 'save', scores: EvaluationScore[]): void
   }>()
 
   const onCloseClick = () => emit('cancel')

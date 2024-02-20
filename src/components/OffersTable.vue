@@ -3,16 +3,10 @@
 </template>
 
 <script lang="ts" setup>
+  import { Offer } from 'components/types';
 
   const props = defineProps<{
-    offers: Array<{
-      id: string,
-      offerName: string,
-      evaluationScores: Array<{
-        criterionId: string,
-        score: number
-      }>
-    }>,
+    offers: Offer[],
     criteria: Array<{
       id: string,
       name: string

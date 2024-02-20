@@ -33,17 +33,11 @@
 </template>
 
 <script setup lang="ts">
-
-import { computed, reactive } from 'vue';
-
-  type CriterionValue = {
-    id?: string
-    name: string
-    weight: string
-  }
+  import { NewCriterion, Criterion } from 'components/types';
+  import { computed, reactive } from 'vue';
 
   const props = defineProps<{
-    criterion: CriterionValue
+    criterion: NewCriterion | Criterion
     maxWeight: number
     loading: boolean
     error: string | false
@@ -55,7 +49,7 @@ import { computed, reactive } from 'vue';
   const criterion = reactive(props.criterion)
 
   const emit = defineEmits<{
-    (e: 'save', criterion: CriterionValue): void
+    (e: 'save', criterion: NewCriterion | Criterion): void
     (e: 'cancel'): void
   }>()
 
