@@ -227,6 +227,18 @@
     criterionDialog.value = false
     criterionError.value = false
   }
-  const onRemoveCriterion = (id: string) => console.log('remove criterion', id)
+  const onRemoveCriterion = (id: string) => {
+    const criterionIdx = evaluationCriteria.findIndex(c => c.id === id)
+    if (criterionIdx > -1) {
+      evaluationCriteria.splice(criterionIdx, 1)
+    }
+
+    offers.forEach(o => {
+      const idx = o.evaluationScores.findIndex(s => s.criterionId === id)
+      if (idx > -1) {
+        o.evaluationScores.splice(idx, 1)
+      }
+    })
+  }
 
 </script>
