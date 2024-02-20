@@ -189,6 +189,7 @@
     currentCriterion.value = toEdit
     criterionDialog.value = true
   }
+
   const onSaveCriterion = (criterion: NewCriterion | Criterion) => {
     console.log('saving criterion', criterion)
     criterionLoading.value = true
@@ -199,6 +200,23 @@
         if (criterion.name.trim() === '') {
           criterionError.value = 'Criterion name can not be empty'
         } else {
+
+          const newCriterion: Criterion = criterion.id === undefined
+            ? { ...criterion, id: Math.random().toString() }
+            : criterion as Criterion
+
+          const oldIdx = evaluationCriteria.findIndex(c => c.id === newCriterion.id)
+
+          if (oldIdx > -1) {
+            evaluationCriteria.splice(oldIdx, 1, newCriterion)
+          } else {
+            evaluationCriteria.push(newCriterion)
+            offers.forEach(o => o.evaluationScores.push({
+              criterionId: newCriterion.id,
+              score: 0
+            }))
+          }
+
           closeCriterionDialog()
         }
       },
