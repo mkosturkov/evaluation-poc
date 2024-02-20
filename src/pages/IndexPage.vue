@@ -13,8 +13,9 @@
       <CriterionEditForm
         :criterion="currentCriterion"
         :max-weight="criterionMaxWeight"
+        :loading="criterionLoading"
         @save="onSaveCriterion"
-        @cancel="onCloseCriterionDialog"
+        @cancel="closeCriterionDialog"
       />
     </q-dialog>
     <div class="row">
@@ -155,6 +156,7 @@
   }
 
   const criterionDialog = ref(false)
+  const criterionLoading = ref(false)
   const newCriterion = () => ({
     name: '',
     weight: 0
@@ -175,10 +177,18 @@
     criterionDialog.value = true
   }
   const onSaveCriterion = (criterion: any) => {
-      console.log('saving criterion', criterion)
+    console.log('saving criterion', criterion)
+    criterionLoading.value = true
+    setTimeout(
+      () => {
+        criterionLoading.value = false
+        closeCriterionDialog()
+      },
+      500
+    )
   }
-  const onCloseCriterionDialog = () => {
-      criterionDialog.value = false
+  const closeCriterionDialog = () => {
+    criterionDialog.value = false
   }
   const onRemoveCriterion = (id: string) => console.log('remove criterion', id)
 

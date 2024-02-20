@@ -22,7 +22,7 @@
     </q-card-section>
     <q-card-actions>
       <q-btn @click="onCancel">Cancel</q-btn>
-      <q-btn @click="onSave">Save</q-btn>
+      <q-btn @click="onSave" :loading="props.loading">Save</q-btn>
     </q-card-actions>
   </q-card>
 </template>
@@ -38,8 +38,9 @@ import { computed, reactive } from 'vue';
   }
 
   const props = defineProps<{
-    criterion: CriterionValue,
+    criterion: CriterionValue
     maxWeight: number
+    loading: boolean
   }>()
 
   const isNew = computed(() => props.criterion.id === undefined)
