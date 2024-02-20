@@ -15,7 +15,7 @@
     </q-card-section>
     <q-card-actions>
       <q-btn @click="onCloseClick">Close</q-btn>
-      <q-btn @click="onSaveClick">Save</q-btn>
+      <q-btn @click="onSaveClick" :loading="props.loading">Save</q-btn>
     </q-card-actions>
   </q-card>
 </template>
@@ -34,6 +34,7 @@ import { computed, ref } from 'vue';
       criterionId: string
       score: number
     }>
+    loading: boolean
   }>()
 
   const scores = ref(

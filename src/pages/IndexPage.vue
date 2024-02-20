@@ -4,6 +4,7 @@
       <EvaluationForm
         :scores="scoresDialogScores"
         :criteria="evaluationCriteria"
+        :loading="scoresLoading"
         @cancel="closeScoresDialog"
         @save="saveScores"
       />
@@ -132,16 +133,25 @@
 
   const scoresDialog = ref(false)
   const scoresDialogScores = ref(offers[0].evaluationScores)
+  const scoresLoading = ref(false)
 
   const onOfferSelected = (id: string) => {
     scoresDialog.value = true
     scoresDialogScores.value = offers.find((o: any) => o.id === id)?.evaluationScores
   }
   const saveScores = (scores: any) => {
-      console.log('saving scores', scores)
+    console.log('saving scores', scores)
+    scoresLoading.value = true
+    setTimeout(
+      () => {
+        scoresLoading.value = false
+        closeScoresDialog()
+      },
+      500
+    )
   }
   const closeScoresDialog = () => {
-      scoresDialog.value = false
+    scoresDialog.value = false
   }
 
   const criterionDialog = ref(false)
