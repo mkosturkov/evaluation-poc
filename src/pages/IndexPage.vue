@@ -34,7 +34,7 @@
 </template>
 
 <script lang="ts" setup>
-  import { offers, evaluationCriteria } from './state';
+  import { offers, evaluationCriteria, addCriterion, removeCriterion, updateCriterion, saveScores as saveStateScores } from 'pages/state';
   import { NewCriterion, Criterion, EvaluationScore, Offer } from 'components/types';
   import OffersTable from 'components/OffersTable.vue';
   import CriteriaList from 'components/CriteriaList.vue';
@@ -63,10 +63,7 @@
     setTimeout(
       () => {
         scoresLoading.value = false;
-        const selectedOffer = offers.find((o) => o.id === selectedOfferId)
-        if (selectedOffer) {
-          selectedOffer.evaluationScores = scores
-        }
+        saveStateScores(selectedOfferId, scores)
         closeScoresDialog()
       },
       500
@@ -110,22 +107,18 @@
           criterionError.value = 'Criterion name can not be empty'
         } else {
 
-          const newCriterion: Criterion = criterion.id === undefined
-            ? { ...criterion, id: Math.random().toString() }
-            : criterion as Criterion
-
-          const oldIdx = evaluationCriteria.findIndex(c => c.id === newCriterion.id)
-
-          if (oldIdx > -1) {
-            evaluationCriteria.splice(oldIdx, 1, newCriterion)
-          } else {
-            evaluationCriteria.push(newCriterion)
-            offers.forEach(o => o.evaluationScores.push({
-              criterionId: newCriterion.id,
-              score: 0
-            }))
+          type CriterionGuard = {
+            (c: Criterion): c is Criterion
+            (c: NewCriterion): c is Criterion
           }
 
+          const isCriterion: CriterionGuard = (c): c is Criterion => c.id !== undefined
+
+          if (isCriterion(criterion)) {
+            updateCriterion(criterion)
+          } else {
+            addCriterion(criterion)
+          }
           closeCriterionDialog()
         }
       },
@@ -136,18 +129,6 @@
     criterionDialog.value = false
     criterionError.value = false
   }
-  const onRemoveCriterion = (id: string) => {
-    const criterionIdx = evaluationCriteria.findIndex(c => c.id === id)
-    if (criterionIdx > -1) {
-      evaluationCriteria.splice(criterionIdx, 1)
-    }
-
-    offers.forEach(o => {
-      const idx = o.evaluationScores.findIndex(s => s.criterionId === id)
-      if (idx > -1) {
-        o.evaluationScores.splice(idx, 1)
-      }
-    })
-  }
+  const onRemoveCriterion = removeCriterion
 
 </script>

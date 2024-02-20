@@ -1,5 +1,5 @@
 import { reactive } from 'vue';
-import { Criterion, Offer } from 'components/types';
+import { Criterion, EvaluationScore, NewCriterion, Offer } from 'components/types';
 
 const evaluationCriteria = reactive<Criterion[]>([
   {
@@ -92,10 +92,53 @@ const offers = reactive<Offer[]>([
         }
       ]
     }
-  ]
-)
+  ])
+
+const saveScores = (offerId: string, scores: EvaluationScore[]): void => {
+  const selectedOffer = offers.find((o) => o.id === offerId)
+  if (selectedOffer) {
+    selectedOffer.evaluationScores = scores
+  }
+}
+
+const addCriterion = (newCriterion: NewCriterion): void => {
+  const id = Math.random().toString()
+  evaluationCriteria.push({ ...newCriterion, id })
+  offers.forEach(o => o.evaluationScores.push({
+    criterionId: id,
+    score: 0
+  }))
+}
+
+const updateCriterion = (criterion: Criterion): void => {
+  const oldIdx = evaluationCriteria.findIndex(c => c.id === criterion.id)
+  if (oldIdx < 0) {
+    throw 'can not find criterion'
+  }
+  evaluationCriteria.splice(oldIdx, 1, criterion)
+}
+
+const removeCriterion = (id: Criterion['id']): void => {
+  const oldIdx = evaluationCriteria.findIndex(c => c.id === id)
+  if (oldIdx < 0) {
+    throw 'can not find criterion'
+  }
+  evaluationCriteria.splice(oldIdx, 1)
+
+  offers.forEach(o => {
+    const cidx = o.evaluationScores.findIndex(e => e.criterionId === id)
+    if (cidx > -1) {
+      o.evaluationScores.splice(cidx, 1)
+    }
+  })
+}
 
 export {
   offers,
-  evaluationCriteria
+  evaluationCriteria,
+
+  saveScores,
+  addCriterion,
+  updateCriterion,
+  removeCriterion
 }
