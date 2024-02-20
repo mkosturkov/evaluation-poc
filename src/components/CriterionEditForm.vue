@@ -13,7 +13,7 @@
       <div style="padding: 30px 0" class="row">
         <q-slider
           v-model="criterion.weight"
-          :min="minWeight"
+          :min="0"
           :max="props.maxWeight"
           label
           label-always
@@ -43,8 +43,6 @@ import { computed, reactive } from 'vue';
   }>()
 
   const isNew = computed(() => props.criterion.id === undefined)
-  const minWeight = computed(() => props.maxWeight * -1)
-
   const criterion = reactive(props.criterion)
 
   const emit = defineEmits<{

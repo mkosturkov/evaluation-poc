@@ -9,7 +9,7 @@
           {{ score.name }}
         </div>
         <div style="padding: 30px 0" class="row">
-          <q-slider v-model="score.score" label label-always :min="-50" :max="50"></q-slider>
+          <q-slider v-model="score.score" label label-always :min="-100" :max="100"></q-slider>
         </div>
       </template>
     </q-card-section>
@@ -44,7 +44,7 @@ import { computed, ref } from 'vue';
   )
 
   const totalScore = computed(
-    () => scores.value.reduce((acc, cur) => acc + cur.score * cur.weight, 0) * 100
+    () => scores.value.reduce((acc, cur) => acc + cur.score * cur.weight, 0)
   )
 
   const emit = defineEmits<{
