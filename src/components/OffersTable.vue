@@ -3,7 +3,7 @@
 </template>
 
 <script lang="ts" setup>
-  import { Offer } from 'components/types';
+  import { Offer } from 'src/types';
   import { computed } from 'vue';
 
   const props = defineProps<{

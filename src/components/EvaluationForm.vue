@@ -21,7 +21,7 @@
 </template>
 
 <script setup lang="ts">
-  import { Criterion, EvaluationScore } from 'components/types';
+  import { Criterion, EvaluationScore } from 'src/types';
   import { computed, ref } from 'vue';
 
   const props = defineProps<{

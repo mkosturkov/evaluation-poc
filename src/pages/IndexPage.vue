@@ -34,8 +34,8 @@
 </template>
 
 <script lang="ts" setup>
-  import { offers, evaluationCriteria, addCriterion, removeCriterion, updateCriterion, saveScores as saveStateScores } from 'pages/state';
-  import { NewCriterion, Criterion, EvaluationScore, Offer } from 'components/types';
+  import { offers, evaluationCriteria, addCriterion, removeCriterion, updateCriterion, saveScores as saveStateScores } from 'src/state';
+  import { NewCriterion, Criterion, EvaluationScore, Offer } from 'src/types';
   import OffersTable from 'components/OffersTable.vue';
   import CriteriaList from 'components/CriteriaList.vue';
   import { computed, reactive, ref } from 'vue';

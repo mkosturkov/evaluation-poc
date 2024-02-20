@@ -33,7 +33,7 @@
 </template>
 
 <script setup lang="ts">
-  import { NewCriterion, Criterion } from 'components/types';
+  import { NewCriterion, Criterion } from 'src/types';
   import { computed, reactive } from 'vue';
 
   const props = defineProps<{

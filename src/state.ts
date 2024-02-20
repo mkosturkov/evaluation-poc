@@ -1,5 +1,5 @@
 import { reactive } from 'vue';
-import { Criterion, EvaluationScore, NewCriterion, Offer } from 'components/types';
+import { Criterion, EvaluationScore, NewCriterion, Offer } from 'src/types';
 
 const evaluationCriteria = reactive<Criterion[]>([
   {
