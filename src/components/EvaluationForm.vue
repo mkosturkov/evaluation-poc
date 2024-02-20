@@ -9,7 +9,7 @@
           {{ score.name }}
         </div>
         <div style="padding: 30px 0" class="row">
-          <q-slider v-model="score.score" label label-always min="-50" max="50"></q-slider>
+          <q-slider v-model="score.score" label label-always :min="-50" :max="50"></q-slider>
         </div>
       </template>
     </q-card-section>

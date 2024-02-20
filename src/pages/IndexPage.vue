@@ -133,7 +133,7 @@
 
   const onOfferSelected = (id: string) => {
     scoresDialog.value = true
-    scoresDialogScores.value = offers.value.find((o: any) => o.id === id)?.evaluationScores
+    scoresDialogScores.value = offers.find((o: any) => o.id === id)?.evaluationScores
   }
 
   const criterionDialog = ref(false)
