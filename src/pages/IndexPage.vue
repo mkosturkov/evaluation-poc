@@ -4,6 +4,8 @@
       <EvaluationForm
         :scores="scoresDialogScores"
         :criteria="evaluationCriteria"
+        @cancel="closeScoresDialog"
+        @save="saveScores"
       />
     </q-dialog>
     <q-dialog v-model="criterionDialog">
@@ -134,6 +136,12 @@
   const onOfferSelected = (id: string) => {
     scoresDialog.value = true
     scoresDialogScores.value = offers.find((o: any) => o.id === id)?.evaluationScores
+  }
+  const saveScores = (scores: any) => {
+      console.log('saving scores', scores)
+  }
+  const closeScoresDialog = () => {
+      scoresDialog.value = false
   }
 
   const criterionDialog = ref(false)
