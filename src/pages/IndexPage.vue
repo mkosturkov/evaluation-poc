@@ -14,6 +14,7 @@
         :criterion="currentCriterion"
         :max-weight="criterionMaxWeight"
         :loading="criterionLoading"
+        :error="criterionError"
         @save="onSaveCriterion"
         @cancel="closeCriterionDialog"
       />
@@ -157,6 +158,7 @@
 
   const criterionDialog = ref(false)
   const criterionLoading = ref(false)
+  const criterionError = ref<string|false>(false)
   const newCriterion = () => ({
     name: '',
     weight: 0
@@ -176,19 +178,25 @@
     currentCriterion.value = toEdit
     criterionDialog.value = true
   }
-  const onSaveCriterion = (criterion: any) => {
+  const onSaveCriterion = (criterion: { name: string }) => {
     console.log('saving criterion', criterion)
     criterionLoading.value = true
+    criterionError.value = false
     setTimeout(
       () => {
         criterionLoading.value = false
-        closeCriterionDialog()
+        if (criterion.name.trim() === '') {
+          criterionError.value = 'Criterion name can not be empty'
+        } else {
+          closeCriterionDialog()
+        }
       },
       500
     )
   }
   const closeCriterionDialog = () => {
     criterionDialog.value = false
+    criterionError.value = false
   }
   const onRemoveCriterion = (id: string) => console.log('remove criterion', id)
 

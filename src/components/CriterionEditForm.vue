@@ -5,7 +5,12 @@
     </q-card-section>
     <q-card-section>
       <div class="row">
-        <q-input v-model="criterion.name" label="Name"></q-input>
+        <q-input
+          v-model="criterion.name"
+          label="Name"
+          :error="hasError"
+          :error-message="errorMessage"
+        />
       </div>
       <div style="margin-top: 20px">
         Weight
@@ -41,9 +46,12 @@ import { computed, reactive } from 'vue';
     criterion: CriterionValue
     maxWeight: number
     loading: boolean
+    error: string | false
   }>()
 
   const isNew = computed(() => props.criterion.id === undefined)
+  const hasError = computed(() => props.error !== false)
+  const errorMessage = computed(() => props.error || '')
   const criterion = reactive(props.criterion)
 
   const emit = defineEmits<{
