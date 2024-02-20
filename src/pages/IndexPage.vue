@@ -137,9 +137,11 @@
   const scoresDialog = ref(false)
   const scoresDialogScores = ref<EvaluationScore[]>([])
   const scoresLoading = ref(false)
+  let selectedOfferId: Offer['id'] = ''
 
-  const onOfferSelected = (id: string) => {
+  const onOfferSelected = (id: Offer['id']) => {
     scoresDialog.value = true
+    selectedOfferId = id
     const selectedOffer = offers.find((o) => o.id === id)
     if (!selectedOffer) {
       throw 'could not find offer'
@@ -151,7 +153,11 @@
     scoresLoading.value = true
     setTimeout(
       () => {
-        scoresLoading.value = false
+        scoresLoading.value = false;
+        const selectedOffer = offers.find((o) => o.id === selectedOfferId)
+        if (selectedOffer) {
+          selectedOffer.evaluationScores = scores
+        }
         closeScoresDialog()
       },
       500

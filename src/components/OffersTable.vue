@@ -4,6 +4,7 @@
 
 <script lang="ts" setup>
   import { Offer } from 'components/types';
+  import { computed } from 'vue';
 
   const props = defineProps<{
     offers: Offer[],
@@ -19,7 +20,7 @@
 
   const makeEvaluationColumnName = (id: string) => `score-${id}`
 
-  const columns = [
+  const columns = computed(() => [
     {
       name: 'offerName',
       label: 'Offer',
@@ -30,9 +31,9 @@
     label: c.name,
     field: makeEvaluationColumnName(c.id),
     format: (v: any) => `${v}%`
-  })))
+  }))))
 
-  const rows = props.offers.map(o => ({
+  const rows = computed(() => props.offers.map(o => ({
     id: o.id,
     offerName: o.offerName,
     ...Object.fromEntries(
@@ -42,7 +43,7 @@
       ]),
 
     )
-  }))
+  })))
 
   const onRowClicked = (e: Event, row: {id: string}) => emit('offer-selected', row.id)
 </script>
