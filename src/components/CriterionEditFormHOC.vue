@@ -5,7 +5,7 @@
     :loading="criterionLoading"
     :error="criterionError"
     @save="onSaveCriterion"
-    @cancel="emit('complete')"
+    @cancel="onCancel"
   />
 </template>
 
@@ -20,7 +20,7 @@
   }>()
 
   const currentCriterion = computed(() => {
-    return evaluationCriteria.find(c => c.id === props.criterionId) || {
+    return evaluationCriteria.value.find(c => c.id === props.criterionId) || {
       name: '',
       weight: 0
     }
@@ -32,35 +32,36 @@
 
   const criterionLoading = ref(false)
   const criterionError = ref<string|false>(false)
-  const criterionMaxWeight = computed(() => 50 - evaluationCriteria.reduce((acc, cur) => acc + cur.weight, 0))
+  const criterionMaxWeight = computed(() => 50 - evaluationCriteria.value.reduce((acc, cur) => acc + cur.weight, 0))
 
-  const onSaveCriterion = (criterion: NewCriterion | Criterion) => {
+  const onSaveCriterion = async (criterion: NewCriterion | Criterion) => {
     criterionLoading.value = true
     criterionError.value = false
-    setTimeout(
-      () => {
-        criterionLoading.value = false
-        if (criterion.name.trim() === '') {
-          criterionError.value = 'Criterion name can not be empty'
-        } else {
+    type CriterionGuard = {
+      (c: Criterion): c is Criterion
+      (c: NewCriterion): c is Criterion
+    }
 
-          type CriterionGuard = {
-            (c: Criterion): c is Criterion
-            (c: NewCriterion): c is Criterion
-          }
+    const isCriterion: CriterionGuard = (c): c is Criterion => c.id !== undefined
 
-          const isCriterion: CriterionGuard = (c): c is Criterion => c.id !== undefined
-
-          if (isCriterion(criterion)) {
-            updateCriterion(criterion)
-          } else {
-            addCriterion(criterion)
-          }
-          emit('complete')
-        }
-      },
-      500
-    )
+    try {
+      if (isCriterion(criterion)) {
+        await updateCriterion(criterion)
+      } else {
+        await addCriterion(criterion)
+      }
+      emit('complete')
+    } catch (e: unknown) {
+      if (e instanceof Error) {
+        criterionError.value = e.message
+      } else {
+        throw e
+      }
+    } finally {
+      criterionLoading.value = false
+    }
   }
+
+  const onCancel = () => emit('complete')
 
 </script>

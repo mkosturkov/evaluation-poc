@@ -27,11 +27,11 @@
 </template>
 
 <script lang="ts" setup>
-  import { offers, evaluationCriteria, removeCriterion } from 'src/state';
+  import { offers, evaluationCriteria, removeCriterion, init } from 'src/state';
   import { Criterion, Offer } from 'src/types';
   import OffersTable from 'components/OffersTable.vue';
   import CriteriaList from 'components/CriteriaList.vue';
-  import { computed, ref } from 'vue';
+  import { computed, onMounted, ref } from 'vue';
   import CriterionEditFormHOC from 'components/CriterionEditFormHOC.vue';
   import EvaluationFormHOC from 'components/EvaluationFormHOC.vue';
 
@@ -53,9 +53,14 @@
   }
   const onEditCriterion = (id: Criterion['id']) => {
     selectedCriterionId.value = id
+    isCriterionDialogOpen.value = true
+  }
+  const closeCriterionDialog = () => {
+    selectedCriterionId.value = null
     isCriterionDialogOpen.value = false
   }
-  const closeCriterionDialog = () => selectedCriterionId.value = null
+
+  onMounted(() => init())
 
 
 </script>

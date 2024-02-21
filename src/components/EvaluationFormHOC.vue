@@ -23,20 +23,17 @@
     (e: 'complete'): void
   }>()
 
-  const scores = computed(() => offers.find(o => o.id === props.offerId) || [])
+  const scores = computed(() => offers.value.find(o => o.id === props.offerId)?.evaluationScores || [])
 
   const scoresLoading = ref(false)
 
-  const onSaveScores = (scores: EvaluationScore[]) => {
-    scoresLoading.value = true
-    setTimeout(
-      () => {
-        scoresLoading.value = false;
-        saveScores(props.offerId, scores)
-        emit('complete')
-      },
-      500
-    )
+  const onSaveScores = async (scores: EvaluationScore[]) => {
+    if (props.offerId !== null) {
+      scoresLoading.value = true
+      await saveScores(props.offerId, scores)
+      scoresLoading.value = false;
+      emit('complete')
+    }
   }
 
 </script>

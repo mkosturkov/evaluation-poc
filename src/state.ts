@@ -1,142 +1,46 @@
-import { reactive } from 'vue';
+import { ref } from 'vue';
 import { Criterion, EvaluationScore, NewCriterion, Offer } from 'src/types';
+import { service } from 'src/service'
 
-const evaluationCriteria = reactive<Criterion[]>([
-  {
-    id: 'a',
-    name: 'Quality',
-    weight: 2.5
-  },
-  {
-    id: 'b',
-    name: 'Delivery Speed',
-    weight: 3.6
-  },
-  {
-    id: 'c',
-    name: 'Discount',
-    weight: 2.2
-  }
-])
+const evaluationCriteria = ref<Criterion[]>([])
 
-const offers = reactive<Offer[]>([
-    {
-      id: 'o1',
-      offerName: 'Big Store of Stores',
-      evaluationScores: [
-        {
-          criterionId: 'a',
-          score: 2.8
-        },
-        {
-          criterionId: 'b',
-          score: 3.5
-        },
-        {
-          criterionId: 'c',
-          score: 0
-        }
-      ]
-    },
-    {
-      id: 'o2',
-      offerName: 'Pappa Beh\'s Merchandise',
-      evaluationScores: [
-        {
-          criterionId: 'a',
-          score: 1.9
-        },
-        {
-          criterionId: 'b',
-          score: 4
-        },
-        {
-          criterionId: 'c',
-          score: 3
-        }
-      ]
-    },
-    {
-      id: 'o3',
-      offerName: 'All You Need Goods',
-      evaluationScores: [
-        {
-          criterionId: 'a',
-          score: 4
-        },
-        {
-          criterionId: 'b',
-          score: -1.3
-        },
-        {
-          criterionId: 'c',
-          score: 1
-        }
-      ]
-    },
-    {
-      id: 'o4',
-      offerName: 'Flanders & Sons co.',
-      evaluationScores: [
-        {
-          criterionId: 'a',
-          score: 2
-        },
-        {
-          criterionId: 'b',
-          score: 0
-        },
-        {
-          criterionId: 'c',
-          score: 5
-        }
-      ]
-    }
+const offers = ref<Offer[]>([])
+
+const init = async () => {
+  const [c, l] = await Promise.all([
+    service.getCriteria(),
+    service.getOffers()
   ])
-
-const saveScores = (offerId: string, scores: EvaluationScore[]): void => {
-  const selectedOffer = offers.find((o) => o.id === offerId)
-  if (selectedOffer) {
-    selectedOffer.evaluationScores = scores
-  }
+  console.log(c, l)
+  evaluationCriteria.value = c
+  offers.value = l
 }
 
-const addCriterion = (newCriterion: NewCriterion): void => {
-  const id = Math.random().toString()
-  evaluationCriteria.push({ ...newCriterion, id })
-  offers.forEach(o => o.evaluationScores.push({
-    criterionId: id,
-    score: 0
-  }))
+const saveScores = async (offerId: string, scores: EvaluationScore[]): Promise<void> => {
+  await service.saveScores(offerId, scores)
+  offers.value = await service.getOffers()
 }
 
-const updateCriterion = (criterion: Criterion): void => {
-  const oldIdx = evaluationCriteria.findIndex(c => c.id === criterion.id)
-  if (oldIdx < 0) {
-    throw 'can not find criterion'
-  }
-  evaluationCriteria.splice(oldIdx, 1, criterion)
+const addCriterion = async (newCriterion: NewCriterion): Promise<void> => {
+  await service.addCriterion(newCriterion)
+  await init()
 }
 
-const removeCriterion = (id: Criterion['id']): void => {
-  const oldIdx = evaluationCriteria.findIndex(c => c.id === id)
-  if (oldIdx < 0) {
-    throw 'can not find criterion'
-  }
-  evaluationCriteria.splice(oldIdx, 1)
+const updateCriterion = async (criterion: Criterion): Promise<void> => {
+  await service.updateCriterion(criterion)
+  await init()
+}
 
-  offers.forEach(o => {
-    const cidx = o.evaluationScores.findIndex(e => e.criterionId === id)
-    if (cidx > -1) {
-      o.evaluationScores.splice(cidx, 1)
-    }
-  })
+const removeCriterion = async (id: Criterion['id']): Promise<void> => {
+  await service.removeCriterion(id)
+  await init()
 }
 
 export {
   offers,
   evaluationCriteria,
 
+  init,
   saveScores,
   addCriterion,
   updateCriterion,
