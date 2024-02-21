@@ -1,7 +1,7 @@
 <template>
   <EvaluationForm
     :scores="scores"
-    :criteria="evaluationCriteria"
+    :criteria="store.evaluationCriteria.value"
     :loading="scoresLoading"
     @cancel="emit('complete')"
     @save="onSaveScores"
@@ -10,7 +10,7 @@
 
 <script setup lang="ts">
 
-  import { evaluationCriteria, offers, saveScores } from 'src/state';
+  import store from 'src/state';
   import { EvaluationScore, Offer } from 'src/types';
   import { computed, ref } from 'vue';
   import EvaluationForm from 'components/EvaluationForm.vue';
@@ -23,14 +23,14 @@
     (e: 'complete'): void
   }>()
 
-  const scores = computed(() => offers.value.find(o => o.id === props.offerId)?.evaluationScores || [])
+  const scores = computed(() => store.offers.value.find(o => o.id === props.offerId)?.evaluationScores || [])
 
   const scoresLoading = ref(false)
 
   const onSaveScores = async (scores: EvaluationScore[]) => {
     if (props.offerId !== null) {
       scoresLoading.value = true
-      await saveScores(props.offerId, scores)
+      await store.saveScores(props.offerId, scores)
       scoresLoading.value = false;
       emit('complete')
     }

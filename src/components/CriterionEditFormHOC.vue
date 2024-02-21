@@ -13,14 +13,14 @@
   import CriterionEditForm from 'components/CriterionEditForm.vue';
   import { computed, ref } from 'vue';
   import { Criterion, NewCriterion } from 'src/types';
-  import { addCriterion, evaluationCriteria, updateCriterion } from 'src/state';
+  import store from 'src/state';
 
   const props = defineProps<{
     criterionId: Criterion['id'] | null
   }>()
 
   const currentCriterion = computed(() => {
-    return evaluationCriteria.value.find(c => c.id === props.criterionId) || {
+    return store.evaluationCriteria.value.find(c => c.id === props.criterionId) || {
       name: '',
       weight: 0
     }
@@ -32,7 +32,7 @@
 
   const criterionLoading = ref(false)
   const criterionError = ref<string|false>(false)
-  const criterionMaxWeight = computed(() => 50 - evaluationCriteria.value.reduce((acc, cur) => acc + cur.weight, 0))
+  const criterionMaxWeight = computed(() => 50 - store.evaluationCriteria.value.reduce((acc, cur) => acc + cur.weight, 0))
 
   const onSaveCriterion = async (criterion: NewCriterion | Criterion) => {
     criterionLoading.value = true
@@ -46,9 +46,9 @@
 
     try {
       if (isCriterion(criterion)) {
-        await updateCriterion(criterion)
+        await store.updateCriterion(criterion)
       } else {
-        await addCriterion(criterion)
+        await store.addCriterion(criterion)
       }
       emit('complete')
     } catch (e: unknown) {

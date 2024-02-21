@@ -14,20 +14,20 @@
     </q-dialog>
     <div class="row">
       <criteria-list
-        :criteria="evaluationCriteria"
+        :criteria="store.evaluationCriteria.value"
         @add-new="onAddCriterion"
         @edit="onEditCriterion"
-        @remove="removeCriterion"
+        @remove="store.removeCriterion"
       />
     </div>
     <div class="row">
-      <offers-table :offers="offers" :criteria="evaluationCriteria" @offer-selected="onOfferSelected" />
+      <offers-table :offers="store.offers.value" :criteria="store.evaluationCriteria.value" @offer-selected="onOfferSelected" />
     </div>
   </q-page>
 </template>
 
 <script lang="ts" setup>
-  import { offers, evaluationCriteria, removeCriterion, init } from 'src/state';
+  import store from 'src/state';
   import { Criterion, Offer } from 'src/types';
   import OffersTable from 'components/OffersTable.vue';
   import CriteriaList from 'components/CriteriaList.vue';
@@ -60,7 +60,6 @@
     isCriterionDialogOpen.value = false
   }
 
-  onMounted(() => init())
-
+  onMounted(store.init)
 
 </script>
